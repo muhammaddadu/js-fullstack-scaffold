@@ -1,0 +1,27 @@
+{
+  "name": "js-fullstack-scaffold",
+  "version": "1.0.0",
+  "description": "Scaffold for a Docker based FullStack NodeJS Projects with a robust CI/CD Gitlab process",
+  "main": "app.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/muhammaddadu/js-fullstack-scaffold.git"
+  },
+  "keywords": [
+    "scaffold",
+    "node",
+    "docker",
+    "clout-js",
+    "gitlab",
+    "full-stack"
+  ],
+  "author": "Muhammad Dadu <muhammad@dadu.co>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/muhammaddadu/js-fullstack-scaffold/issues"
+  },
+  "homepage": "https://github.com/muhammaddadu/js-fullstack-scaffold#readme"
+}
