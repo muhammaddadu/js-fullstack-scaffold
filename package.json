@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/muhammaddadu/js-fullstack-scaffold/issues"
   },
-  "homepage": "https://github.com/muhammaddadu/js-fullstack-scaffold#readme"
+  "homepage": "https://github.com/muhammaddadu/js-fullstack-scaffold#readme",
+  "dependencies": {
+    "clout-js": "^2.0.0-beta.7"
+  }
 }

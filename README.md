@@ -5,6 +5,9 @@ This project is an example/scaffold full-stack application that uses NodeJS with
 
 #### TODO
 
+- Add example of sequalize MySQL model
+- Add example of redis
+- Add example of Angular webapp
 - Add example of running tests
 
 ## Files in this project
