@@ -1,0 +1,12 @@
+version: "2.1"
+services:
+  mysql:
+    ports:
+      - "3306:3306"
+  redis:
+    command: redis-server --maxmemory 256mb
+  node:
+    build: .
+    volumes:
+      - ./:/src
+    restart: "no"

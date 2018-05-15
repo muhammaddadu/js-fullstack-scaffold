@@ -1,0 +1,58 @@
+image: docker:stable
+services:
+- docker:dind
+
+stages:
+- build
+# - test
+- release
+- deploy
+
+variables:
+  CONTAINER_TEST_IMAGE: registry.gitlab.com/dadum01/eat-homely/api:$CI_COMMIT_REF_NAME
+  CONTAINER_RELEASE_IMAGE: registry.gitlab.com/dadum01/eat-homely/api:latest
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+
+build:
+  stage: build
+  script:
+    - docker build --pull -t $CONTAINER_TEST_IMAGE .
+    - docker push $CONTAINER_TEST_IMAGE
+
+# test1:
+#   stage: test
+#   script:
+#     - docker pull $CONTAINER_TEST_IMAGE
+#     - docker run $CONTAINER_TEST_IMAGE npm run test
+
+release-image:
+  stage: release
+  script:
+    - docker pull $CONTAINER_TEST_IMAGE
+    - docker tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+    - docker push $CONTAINER_RELEASE_IMAGE
+  only:
+    - master
+deploy:
+  stage: deploy
+  image: gitlab/dind:latest
+  only:
+    - "master"
+  environment: production
+  services:
+    - docker:dind
+  before_script:
+   - apt-get update -y && apt-get install sshpass
+  script:
+    - printenv > .env
+    - echo $DEPLOYMENT_SERVER_PASS
+    - sshpass -p "${DEPLOYMENT_SERVER_PASS}" scp -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no ./.env ${DEPLOYMENT_SERVER_USER}@${DEPLOYMENT_SERVER_IP}:~/eat-homely
+    - sshpass -p "${DEPLOYMENT_SERVER_PASS}" scp -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no ./docker-compose.yml ${DEPLOYMENT_SERVER_USER}@${DEPLOYMENT_SERVER_IP}:~/eat-homely
+    - sshpass -p $DEPLOYMENT_SERVER_PASS ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no $DEPLOYMENT_SERVER_USER@$DEPLOYMENT_SERVER_IP "
+      cd ~/eat-homely;
+      docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY};
+      docker pull ${CI_REGISTRY}/${CI_PROJECT_PATH}/api:latest;
+      docker-compose up -d
+      "
